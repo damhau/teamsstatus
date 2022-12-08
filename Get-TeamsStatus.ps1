@@ -227,7 +227,7 @@ DO {
             $color = "red"
         }
 
-        if ($Status -eq "Away") {
+        if ($Status -eq "Away" -or $Status -eq "Offline") {
             $color = "off"
         }
 
@@ -260,7 +260,7 @@ DO {
             $color = "green"
         }
 
-        if ($Status -eq "Away") {
+        if ($Status -eq "Away" -or $Status -eq "Offline") {
             $color = "off"
         }
 
