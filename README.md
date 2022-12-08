@@ -1,4 +1,4 @@
-# teamsstatus
+# Teams Status
 
 ## Introduction
 
@@ -6,6 +6,8 @@ Python and Powershell script to scrape the presence status from Teams log file a
 The app provided by Luxafor had to be runnning on my PC and didnt work with Teams so I took the inspiration from https://github.com/EBOOZ/TeamsStatus and https://github.com/vmitchell85/luxafor-python
 
 The powershell script (Get-TeamsStatus.ps1) get the status from the Teams log file and will send an http request to the FLask web server started with the Pyhton script (luxafor-web.py) running on a Raspbery PI (or any other device).
+
+> Keep in mind that there is no security for the web endpoint exposed by the Python script, this is expected to be run in a trusted network.
 
 ## Pre requesite
 
@@ -44,15 +46,15 @@ New-EventLog -LogName Application -Source "TeamsStatus"
 SUBSYSTEMS=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="f372", MODE:="0666"
 ```
 - copy the python script in any folder, I've used /opt/luxafor-web/
+- the flask web server will listen to 8080, if you need to change it update the varaible PORT at line 21 in the script.
 
 - cd to your folder (eg. /opt/luxafor-web/)
 
-- install PyWinUSB and Flasj
+- install PyWinUSB and Flask
 
 ```
 pip3 install PyWinUSB Flask
 ```
-
 
 - create the file /etc/systemd/system/luxafor-web.service and add the following
 
@@ -76,14 +78,43 @@ systemctl start luxafor-web
 
 - check if the service started sucesfully
 
+```
+root@raspberrypi:/opt/luxafor-web# systemctl status luxafor-web
 
+● luxafor-web.service - Luxafor Web
+   Loaded: loaded (/etc/systemd/system/luxafor-web.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2022-12-08 12:57:08 CET; 1s ago
+ Main PID: 6175 (python3)
+    Tasks: 2 (limit: 4915)
+   Memory: 11.2M
+   CGroup: /system.slice/luxafor-web.service
+           └─6175 /usr/bin/python3 /opt/luxafor-web/luxafor-web.py
 
+Dec 08 12:57:08 raspberrypi systemd[1]: Started Luxafor Web.
+Dec 08 12:57:09 raspberrypi python3[6175]:  * Serving Flask app "app" (lazy loading)
+Dec 08 12:57:09 raspberrypi python3[6175]:  * Environment: production
+Dec 08 12:57:09 raspberrypi python3[6175]:    WARNING: Do not use the development server in a production environm
+Dec 08 12:57:09 raspberrypi python3[6175]:    Use a production WSGI server instead.
+Dec 08 12:57:09 raspberrypi python3[6175]:  * Debug mode: off
+Dec 08 12:57:09 raspberrypi python3[6175]:  * Running on http://0.0.0.0:8000/ (Press CTRL+C to quit)
+```
+- you can test the webook with the following command, this should switch the led to red.
+
+```
+curl -X POST http://localhost:8000/webhook -H 'Content-Type: application/json' -d '{"color":"red"}'
+```
 
 ### Windows
 
 - copy the powershells script Get-TeamsStatus.ps1 to any folder on windows, I've copied it in  %userprofile%\AppData\Local\TeamsStatus
+
 - edit Get-TeamsStatus.ps1 and change the following parameters
   - $logType: can be either file to log to a file or eventlog to log to event log
   - $webhookUrl: the full url of the webhook running on your Raspberssy Pi. for me it is "http://192.168.1.34:8000/webhook"
-  - 
+
+- open a powershell prompt and run the script with debug mode to check that everyhitng works
+```
+cd $env:USERPROFILE\AppData\Local\TeamsStatus
+
+```
 
