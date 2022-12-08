@@ -31,19 +31,15 @@ The default configuration of the powershell script will process the following ev
 - Luxafor Usb busy light, I've used the bluethooth version but other should work (link: https://www.digitec.ch/en/s1/product/luxafor-bluetooth-conference-devices-18496607?gclid=CjwKCAiAs8acBhA1EiwAgRFdwyOsbsz79s-Cpoc2STCexqZk4ck40nkurKSP2XKIzSKoe7CQUnRBOBoC3cgQAvD_BwE&gclsrc=aw.ds)
 - Rapsberry Pi to connect the Luxafor Light
 - Windows with MS Teams and Powershell
-- Linux wiht Pyhton3 and Pip3
-- If you want to use the eventlog you have to run the command below in an **elevated** powershell prompt
-```
-New-EventLog -LogName Application -Source "TeamsStatus"
-```
+- Linux (I used Raspberry Pi OS which is Debian based) with Python3 and Pip3 (note: with a few change the script should work with Python2)
 
 ## Installation
 
 ### Linux
 
-- connect the Luxafor USB Bluetooth dongle or usb cable
+- Connect the Luxafor USB Bluetooth dongle or usb cable
 
-> you can check if the id is by runnning dmesg when you insert the usb connector for the luxafor busry light
+> You can check if the id is by runnning dmesg when you insert the usb connector for the luxafor busry light
 
 ```
 [10807489.281366] usb 1-1.4: current rate 8436480 is different from the runtime rate 48000
@@ -62,18 +58,18 @@ New-EventLog -LogName Application -Source "TeamsStatus"
 # add Luxafor LED flag
 SUBSYSTEMS=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="f372", MODE:="0666"
 ```
-- copy the python script in any folder, I've used /opt/luxafor-web/
-- the flask web server will listen to 8080, if you need to change it update the varaible PORT at line 21 in the script.
+- Copy the python script in any folder, I've used /opt/luxafor-web/
+- The flask web server will listen to 8080, if you need to change it update the varaible PORT at line 21 in the script.
 
-- cd to your folder (eg. /opt/luxafor-web/)
+- Cd to your folder (eg. /opt/luxafor-web/)
 
-- install PyWinUSB and Flask
+- Install PyWinUSB and Flask
 
 ```
 pip3 install PyWinUSB Flask
 ```
 
-- create the file /etc/systemd/system/luxafor-web.service and add the following
+- Create the file /etc/systemd/system/luxafor-web.service and add the following
 
 ```
 [Unit]
@@ -86,14 +82,14 @@ ExecStart=/usr/bin/python3 /opt/luxafor-web/app.py
 [Install]
 WantedBy=multi-user.target
 ```
-- enable and start the service
+- Enable and start the service
 
 ```
 systemctl enable luxafor-web
 systemctl start luxafor-web
 ```
 
-- check if the service started sucesfully
+- Check if the service started sucesfully
 
 ```
 root@raspberrypi:/opt/luxafor-web# systemctl status luxafor-web
@@ -115,7 +111,7 @@ Dec 08 12:57:09 raspberrypi python3[6175]:    Use a production WSGI server inste
 Dec 08 12:57:09 raspberrypi python3[6175]:  * Debug mode: off
 Dec 08 12:57:09 raspberrypi python3[6175]:  * Running on http://0.0.0.0:8000/ (Press CTRL+C to quit)
 ```
-- you can test the webook with the following command, this should switch the led to red.
+- You can test the webook with the following command, this should switch the led to red.
 
 ```
 curl -X POST http://localhost:8000/webhook -H 'Content-Type: application/json' -d '{"color":"red"}'
@@ -123,13 +119,17 @@ curl -X POST http://localhost:8000/webhook -H 'Content-Type: application/json' -
 
 ### Windows
 
-- copy the powershells script Get-TeamsStatus.ps1 to any folder on windows, I've copied it in  %userprofile%\AppData\Local\TeamsStatus
+- If you want to use the eventlog you have to run the command below in an **elevated** powershell prompt, otherwise you can log to a file.
+```
+New-EventLog -LogName Application -Source "TeamsStatus"
+```
+- Copy the powershells script Get-TeamsStatus.ps1 to any folder on windows, I've copied it in  %userprofile%\AppData\Local\TeamsStatus
 
-- edit Get-TeamsStatus.ps1 and change the following parameters
+- Edit Get-TeamsStatus.ps1 and change the following parameters
   - $logType: can be either file to log to a file or eventlog to log to event log
   - $webhookUrl: the full url of the webhook running on your Raspberssy Pi. for me it is "http://192.168.1.34:8000/webhook"
 
-- open a powershell prompt and run the script with debug mode to check that everyhitng works
+- Open a powershell prompt and run the script with debug mode to check that everyhitng works
 ```
 cd $env:USERPROFILE\AppData\Local\TeamsStatus
 .\Get-TeamsStatus.ps1 -debugEnabled $true
@@ -145,12 +145,12 @@ cd $env:USERPROFILE\AppData\Local\TeamsStatus
 12/08/2022 13:03:21 - Activity: Not in a call
 ```
 
-> you should be able to change your presence to "do not disturb" in Teams and the light should turn to red.
+> You should be able to change your presence to "do not disturb" in Teams and the light should turn to red.
 
 ### Windows - Install a Service
 
-- download nssm from https://github.com/EBOOZ/TeamsStatus/raw/main/nssm.exe and copy it to %userprofile%\AppData\Local\TeamsStatus
-- start a elevated PowerShell prompt, browse to %userprofile%\AppData\Local\TeamsStatus and run the following command:
+- Download nssm from https://github.com/EBOOZ/TeamsStatus/raw/main/nssm.exe and copy it to %userprofile%\AppData\Local\TeamsStatus
+- Start a elevated PowerShell prompt, browse to %userprofile%\AppData\Local\TeamsStatus and run the following command:
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
 Unblock-File .\Get-TeamsStatus.ps1
@@ -160,7 +160,7 @@ Start-Service -Name "Microsoft Teams Status Monitor"
 > Don't forget to replace <username> with your username
    
 - After completing the steps below, start your Teams client and verify if the status and activity is updated as expected.
-- if you have used the eventlog logging type you can check the log in the event logs
+- If you have used the eventlog logging type you can check the log in the event logs
  
    ![image](https://user-images.githubusercontent.com/14148364/206443660-46362977-c3a1-45a0-ae83-36c9d3eb01ba.png)
    ![image](https://user-images.githubusercontent.com/14148364/206443689-c46b926a-e938-4275-82bd-566ce79135c4.png)
