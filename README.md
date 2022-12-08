@@ -9,6 +9,16 @@ The powershell script (Get-TeamsStatus.ps1) get the status from the Teams log fi
 
 > Keep in mind that there is no security for the web endpoint exposed by the Python script, this is expected to be run in a trusted network.
 
+## Presence state and light color
+
+The default configuration of the powershell script will process the following event:
+
+- If you are **in a call** the light will be **red**
+- If you are **not in a call** the light will be **green**
+- If your presence is **do not disturb** the light will be **red**
+
+> You can fine tune this from line 214 to 267 in the powershell script.
+
 ## Pre requesite
 
 - Luxafor Usb busy light, I've used the bluethooth version but other should work (link: https://www.digitec.ch/en/s1/product/luxafor-bluetooth-conference-devices-18496607?gclid=CjwKCAiAs8acBhA1EiwAgRFdwyOsbsz79s-Cpoc2STCexqZk4ck40nkurKSP2XKIzSKoe7CQUnRBOBoC3cgQAvD_BwE&gclsrc=aw.ds)
@@ -115,6 +125,30 @@ curl -X POST http://localhost:8000/webhook -H 'Content-Type: application/json' -
 - open a powershell prompt and run the script with debug mode to check that everyhitng works
 ```
 cd $env:USERPROFILE\AppData\Local\TeamsStatus
-
+.\Get-TeamsStatus.ps1 -debugEnabled $true
+12/08/2022 13:03:11 - Teams Status started
+12/08/2022 13:03:11 - Processing Teams log file: C:\Users\Damien\AppData\Roaming\Microsoft\Teams\logs.txt
+12/08/2022 13:03:11 - Status: Available
+12/08/2022 13:03:11 - Activity: Not in a call
+12/08/2022 13:03:11 - Wehook http://192.168.1.34:8000/webhook called
+12/08/2022 13:03:11 - Wehook http://192.168.1.34:8000/webhook called
+12/08/2022 13:03:16 - Status: Available
+12/08/2022 13:03:16 - Activity: Not in a call
+12/08/2022 13:03:21 - Status: Available
+12/08/2022 13:03:21 - Activity: Not in a call
 ```
 
+> you should be able to change your presence to "do not disturb" in Teams and the light should turn to red.
+
+### Windows - Install a Service
+
+* Start a elevated PowerShell prompt, browse to C:\Scripts and run the following command:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+Unblock-File .\Settings.ps1
+Unblock-File .\Get-TeamsStatus.ps1
+Start-Process -FilePath .\nssm.exe -ArgumentList 'install "Microsoft Teams Status Monitor" "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" "-command "& { . C:\Scripts\Get-TeamsStatus.ps1 }"" ' -NoNewWindow -Wait
+Start-Service -Name "Microsoft Teams Status Monitor"
+```
+
+After completing the steps below, start your Teams client and verify if the status and activity is updated as expected.
