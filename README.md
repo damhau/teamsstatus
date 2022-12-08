@@ -142,13 +142,23 @@ cd $env:USERPROFILE\AppData\Local\TeamsStatus
 
 ### Windows - Install a Service
 
-* Start a elevated PowerShell prompt, browse to C:\Scripts and run the following command:
+- download nssm from https://github.com/EBOOZ/TeamsStatus/raw/main/nssm.exe and copy it to %userprofile%\AppData\Local\TeamsStatus
+- start a elevated PowerShell prompt, browse to %userprofile%\AppData\Local\TeamsStatus and run the following command:
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
-Unblock-File .\Settings.ps1
 Unblock-File .\Get-TeamsStatus.ps1
-Start-Process -FilePath .\nssm.exe -ArgumentList 'install "Microsoft Teams Status Monitor" "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" "-command "& { . C:\Scripts\Get-TeamsStatus.ps1 }"" ' -NoNewWindow -Wait
+Start-Process -FilePath .\nssm.exe -ArgumentList 'install "Microsoft Teams Status Monitor" "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" "-command "& { . C:\Users\<username>\AppData\Local\TeamsStatus\Get-TeamsStatus.ps1 }"" ' -NoNewWindow -Wait
 Start-Service -Name "Microsoft Teams Status Monitor"
 ```
+> Don't forget to replace <username> with your username
+   
+- After completing the steps below, start your Teams client and verify if the status and activity is updated as expected.
+- if you have used the eventlog logging type you can check the log in the event logs
+ 
+   ![image](https://user-images.githubusercontent.com/14148364/206443660-46362977-c3a1-45a0-ae83-36c9d3eb01ba.png)
+   ![image](https://user-images.githubusercontent.com/14148364/206443689-c46b926a-e938-4275-82bd-566ce79135c4.png)
 
-After completing the steps below, start your Teams client and verify if the status and activity is updated as expected.
+   
+
+   
+   
