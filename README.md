@@ -6,7 +6,7 @@ Python and Powershell script to scrape the presence status from Teams log file a
 
 The app provided by Luxafor had to be runnning on my PC and didnt work with Teams so I took the inspiration from https://github.com/EBOOZ/TeamsStatus and https://github.com/vmitchell85/luxafor-python to create the script in this repo.
 
-The powershell script (Get-TeamsStatus.ps1) get the status from the Teams log file and will send an http request to the FLask web server started with the Pyhton script (luxafor-web.py) running on a Raspbery PI (or any other device).
+The powershell script (Get-TeamsStatus.ps1) get the status from the Teams log file and will send an http request to the Flask web server started with the Pyhton script (luxafor-web.py) running on a Raspbery PI (or any other device).
 
 > Keep in mind that there is no security for the web endpoint exposed by the Python script, this is expected to be run in a trusted network.
 
