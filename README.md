@@ -22,6 +22,28 @@ New-EventLog -LogName Application -Source "TeamsStatus"
 
 ### Linux
 
+- connect the Luxafor USB Bluetooth dongle or usb cable
+
+> you can check if the id is by runnning dmesg when you insert the usb connector for the luxafor busry light
+
+```
+[10807489.281366] usb 1-1.4: current rate 8436480 is different from the runtime rate 48000
+[10977261.175819] usb 1-1.3: new full-speed USB device number 4 using xhci_hcd
+[10977261.315509] usb 1-1.3: New USB device found, idVendor=04d8, idProduct=f372, bcdDevice= 1.00
+[10977261.315525] usb 1-1.3: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[10977261.315538] usb 1-1.3: Product: LUXAFOR BT
+[10977261.315550] usb 1-1.3: Manufacturer: GREYNUT LTD
+[10977261.399011] hid-led 0003:04D8:F372.0003: hidraw2: USB HID v1.11 Device [GREYNUT LTD LUXAFOR BT] on usb-0000:01:00.0-1.3/input0
+[10977261.400747] hid-led 0003:04D8:F372.0003: Greynut Luxafor initialized
+```
+
+- create the file /etc/udev/rules.d/60-luxafor.rules and add the following
+
+```
+# add Luxafor LED flag
+SUBSYSTEMS=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="f372", MODE:="0666"
+```
+
 - copy the python script in 
 
 ### Windows
