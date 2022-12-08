@@ -6,7 +6,9 @@ Python and Powershell script to scrape the presence status from Teams log file a
 
 The app provided by Luxafor had to be runnning on my PC and didnt work with Teams so I took the inspiration from https://github.com/EBOOZ/TeamsStatus and https://github.com/vmitchell85/luxafor-python to create the script in this repo.
 
-The powershell script (Get-TeamsStatus.ps1) get the status from the Teams log file and will send an http request to the Flask web server started with the Pyhton script (luxafor-web.py) running on a Raspbery PI (or any other device).
+The powershell script (Get-TeamsStatus.ps1) start a loop that get the status from the Teams log file and will send an http request that contain the color that the Luxafor busy light to the Flask web server started with the Pyhton script (luxafor-web.py) running on a Raspbery PI (or any other device).
+
+The python script use PyWinUSB to send the command to the Luxafor light to chagne the color.
 
 > Keep in mind that there is no security for the web endpoint exposed by the Python script, this is expected to be run in a trusted network.
 
@@ -17,6 +19,7 @@ The default configuration of the powershell script will process the following ev
 - If you are **in a call** the light will be **red**
 - If you are **not in a call** the light will be **green**
 - If your presence is **do not disturb** the light will be **red**
+- If your precense is **away** the light will turn **off**
 
 > You can fine tune this from line 214 to 267 in the powershell script.
 
