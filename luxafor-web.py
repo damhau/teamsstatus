@@ -6,12 +6,6 @@ import argparse
 
 app = Flask(__name__)
 
-
-import usb.core
-import usb.util
-import sys
-import argparse
-
 DEVICES = []
 ACTION = None
 LED = None
