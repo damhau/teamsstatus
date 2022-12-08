@@ -20,6 +20,7 @@ The default configuration of the powershell script will process the following ev
 
 - If you are **in a call** the light will be **red**
 - If you are **not in a call** the light will be **green**
+- If you are **available** the light will be **green**
 - If your presence is **do not disturb** the light will be **red**
 - If your precense is **away** the light will turn **off**
 
