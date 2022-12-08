@@ -37,14 +37,28 @@ New-EventLog -LogName Application -Source "TeamsStatus"
 [10977261.400747] hid-led 0003:04D8:F372.0003: Greynut Luxafor initialized
 ```
 
-- create the file /etc/udev/rules.d/60-luxafor.rules and add the following
+- create the file /etc/udev/rules.d/60-luxafor.rules and add the following (to allow access for non root users)
 
 ```
 # add Luxafor LED flag
 SUBSYSTEMS=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="f372", MODE:="0666"
 ```
 
-- copy the python script in 
+- copy the python script in any folder, I've used /opt/luxafor-web/
+
+- create the file /etc/systemd/system/luxafor-web.service and add the following
+
+```
+[Unit]
+Description=Luxafor Web
+After=multi-user.target
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/bin/python3 /opt/luxafor-web/app.py
+[Install]
+WantedBy=multi-user.target
+```
 
 ### Windows
 
