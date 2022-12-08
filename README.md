@@ -159,6 +159,10 @@ Start-Service -Name "Microsoft Teams Status Monitor"
    ![image](https://user-images.githubusercontent.com/14148364/206443689-c46b926a-e938-4275-82bd-566ce79135c4.png)
 
    
-
+### Thanks
+   
+- Thanks to EBOOZ for https://github.com/EBOOZ/TeamsStatus
+- Thanks to Vince Mitchell for https://github.com/vmitchell85/luxafor-python
+- Thanks to Luxafor for compiling some of the opensource tools here: https://luxafor.com/best-luxafor-open-source-projects/
    
    
