@@ -13,7 +13,7 @@ The powershell script (Get-TeamsStatus.ps1) get the status from the Teams log fi
 - Rapsberry Pi to connect the Luxafor Light
 - Windows with MS Teams and Powershell
 - Linux wiht Pyhton3 and Pip3
-- If you want to use the eventlog you have to run the command below in an elevated powershell prompt
+- If you want to use the eventlog you have to run the command below in an **elevated** powershell prompt
 ```
 New-EventLog -LogName Application -Source "TeamsStatus"
 ```
@@ -43,8 +43,16 @@ New-EventLog -LogName Application -Source "TeamsStatus"
 # add Luxafor LED flag
 SUBSYSTEMS=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="f372", MODE:="0666"
 ```
-
 - copy the python script in any folder, I've used /opt/luxafor-web/
+
+- cd to your folder (eg. /opt/luxafor-web/)
+
+- install PyWinUSB and Flasj
+
+```
+pip3 install PyWinUSB Flask
+```
+
 
 - create the file /etc/systemd/system/luxafor-web.service and add the following
 
@@ -59,6 +67,17 @@ ExecStart=/usr/bin/python3 /opt/luxafor-web/app.py
 [Install]
 WantedBy=multi-user.target
 ```
+- enable and start the service
+
+```
+systemctl enable luxafor-web
+systemctl start luxafor-web
+```
+
+- check if the service started sucesfully
+
+
+
 
 ### Windows
 
