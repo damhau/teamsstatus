@@ -86,7 +86,7 @@ function Invoke-PythonWebHook {
         Write-LogEvent -logtype $logType -enableStdout $true -logMessage "Teams Status webhook call failed result: $result_error"
     } 
     
-    if ($debugEnabled -eq $true) { Write-Host "$(Get-Date) - Wehook result: $result" }
+    if ($debugEnabled -eq $true) { Write-Host "$(Get-Date) - Wehook $webhookUrl called" }
 
 }
 
